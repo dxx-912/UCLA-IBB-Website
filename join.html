@@ -191,19 +191,26 @@
           </ol>
 
           <div class="btn-row" data-reveal>
-            <!-- TODO: paste the application form URL into href, drop the aria-disabled
-                 attribute, and swap the label to "Apply now" once applications open. -->
-            <a class="btn btn--primary" href="#" aria-disabled="true">
-              Application form, opens soon <svg class="btn__arrow" width="17" height="17" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+            <!-- TODO: when applications open on September 30, add the application
+                 form as a second button here. This one stays put, since the
+                 interest form keeps collecting people who just want updates. -->
+            <a class="btn btn--primary" href="https://forms.gle/q8m1xVz7BKPCmvsHA"
+               target="_blank" rel="noopener">
+              Interest form <svg class="btn__arrow" width="17" height="17" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </a>
           </div>
         </div>
 
-        <!-- Reserved for the Fall 2026 recruitment graphic. Drop an <img> in here.
-             The cell is the grid row's full height; the frame floats centred in
-             it so that growing the frame never pushes the apply button down. -->
-        <div class="recruit-frame-cell" data-reveal style="--reveal-delay:200ms" aria-hidden="true">
-          <div class="recruit-frame"></div>
+        <!-- The Fall 2026 recruitment flyer. The cell is the grid row's full
+             height; the frame floats centred in it so that growing the frame
+             never pushes the apply button down. Below 900px the frame stops
+             floating and stacks between the timeline and the apply button. -->
+        <div class="recruit-frame-cell" data-reveal style="--reveal-delay:200ms">
+          <div class="recruit-frame">
+            <img src="assets/images/recruitment-flyer-fall-2026.jpg"
+                 alt="IBB Fall 2026 recruitment flyer. Info session and applications open Wednesday September 30, get to know IBB October 2, applications close October 4 at 11:59pm, coffee chats October 8, final interviews October 12 and 13. Contact ibbatucla@gmail.com or @ibbatucla."
+                 width="1237" height="1600" loading="lazy" decoding="async">
+          </div>
         </div>
       </div>
     </div>

@@ -205,10 +205,9 @@
    so the five stages read as one compact block, and gives the timeline a
    companion column: a reserved frame that the recruitment graphic will fill.
 
-   The grid mirrors .lead-pair's columns and gap exactly, so the frame's column
-   lands directly beneath the lede paragraph above it and the two share a
-   centreline. Three things are being aligned here, and the row structure is
-   what makes each of them exact rather than eyeballed:
+   The frame takes the column beside the timeline and is centred in it. Three
+   things are being aligned here, and the row structure is what makes each of
+   them exact rather than eyeballed:
 
    1. .recruit-grid__main is display:contents, so the timeline and the frame's
       cell are siblings in the SAME grid row. The cell stretches to that row —
@@ -224,19 +223,21 @@
       it on the half-column left it ~108px too far right, floating in the empty
       space past the ends of the stage text.
 
-      Column 1 no longer matching .lead-pair's half-column is why the frame's
-      cell spans the whole grid and places the frame at 75% + gap/4 instead: on
-      a two-column grid of any width that expression IS the centre of the
-      second half-column, so the frame stays on the lede's centreline above it
-      no matter what column 1 does.
+      The frame's cell used to span the whole grid and sit at 75% + gap/4,
+      which on a two-column grid of any width IS the centre of the second
+      half-column, and so held the frame on the lede's centreline above it no
+      matter what column 1 did. It now takes column 2 alone and centres in
+      that, i.e. on the centre of the space beside the timeline. The two are
+      not the same point: column 1 is max-content (~324px) rather than a half
+      column, so they differ by ~100px at a 1100px shell.
    3. The band's bottom padding is carried by the button row itself
       (--recruit-y above it, the same below it) instead of by the section, so
       the button sits exactly midway between the timeline and the end of the
       blue. row-gap is zeroed for the same reason — the grid gap is a column
       gap only, or it would add itself to the space above the button.
 
-   Below 900px the frame drops away rather than stacking as a large empty box
-   under the timeline.
+   Below 900px the frame stops floating and stacks between the timeline and the
+   button, rather than dropping away as it did while it was an empty box.
    ========================================================================= */
 .section--recruit {
   --recruit-y: calc(var(--section-y) * .72);
@@ -253,31 +254,73 @@
 }
 .recruit-grid__main { display: contents; }
 .recruit-grid .timeline { grid-area: 1 / 1; }
+/* Column 2 only, so the frame centres in the track beside the timeline
+   rather than against the shell. It no longer overlays column 1, so the
+   cell does not need to be click-through any more. */
 .recruit-grid .recruit-frame-cell {
-  position: relative; pointer-events: none;
-  grid-column: 1 / -1; grid-row: 1;
+  position: relative;
+  grid-column: 2; grid-row: 1;
   align-self: stretch;
 }
 .recruit-grid__main .btn-row {
+  /* --btn-x: positive moves the button RIGHT, negative moves it LEFT.
+     0px is the timeline's optical centre (point 2 above). Desktop only. */
+  --btn-x: -15px;
+
   grid-area: 2 / 1;
   justify-content: center;
-  margin-top: var(--recruit-y);
+  margin-top: calc(var(--recruit-y) / 2);
   padding-bottom: var(--recruit-y);
+  /* Offset with position, not transform: .btn-row carries data-reveal, and
+     .js [data-reveal].is-visible sets transform:none at higher specificity,
+     which would cancel a translateX the moment the reveal finished. */
+  position: relative;
+  left: var(--btn-x);
 }
 
+/* Centred in its own column, and centred on the timeline's height. The ratio
+   is the flyer's own 1237x1600, not a rounded 4/5, so the QR code and contact
+   details at its edges are never cropped. */
 .recruit-frame {
+  /* ---- NUDGE THE FLYER HERE ------------------------------------------
+     --flyer-x:  positive moves it RIGHT, negative moves it LEFT
+     --flyer-y:  positive moves it DOWN,  negative moves it UP
+     --flyer-h:  its height; the width follows from the aspect ratio
+
+     0px / 0px means centred in the column beside the timeline, and centred
+     on the timeline's height. Desktop only: below 900px the frame stops
+     floating and these three are ignored.
+     -------------------------------------------------------------------- */
+  --flyer-x: 25px;
+  --flyer-y: 0px;
+  --flyer-h: clamp(384px, 41vw, 624px);
+
   position: absolute;
-  top: 50%; left: calc(75% + var(--recruit-gap) / 4);
-  transform: translate(-50%, -50%);
-  height: clamp(384px, 41vw, 624px);
-  aspect-ratio: 4 / 5;
-  border: 1.5px dashed rgba(255, 255, 255, .28);
+  top: 50%; left: 50%;
+  transform: translate(calc(-50% + var(--flyer-x)), calc(-50% + var(--flyer-y)));
+  height: var(--flyer-h);
+  aspect-ratio: 1237 / 1600;
   border-radius: var(--radius-lg);
-  background: rgba(13, 27, 62, .22);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
 }
+.recruit-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
 @media (max-width: 899px) {
   .recruit-grid { grid-template-columns: minmax(0, max-content); column-gap: 0; }
-  .recruit-grid .recruit-frame-cell { display: none; }
+  /* Stack the flyer between the timeline and the apply button rather than
+     dropping it, since the phone reader is the one who can scan the QR. */
+  .recruit-grid .recruit-frame-cell {
+    position: static; pointer-events: auto;
+    grid-column: 1; grid-row: 2;
+    margin-top: var(--s-8);
+  }
+  .recruit-grid__main .btn-row { grid-row: 3; --btn-x: 0px; }
+  .recruit-frame {
+    position: static; transform: none;
+    height: auto; width: min(100%, 420px);
+    margin-inline: auto;
+  }
 }
 
 /* ============================== CTA BAND ==================================
